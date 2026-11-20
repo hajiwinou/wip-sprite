@@ -1,21 +1,24 @@
-# WIP Island — version responsive
+# WIP Island — correctif complet GitHub Pages
 
-Cette archive est prête à remplacer les fichiers du dépôt GitHub Pages.
+## Contenu
+- `index.html` : page d’entrée, avec paramètres anti-cache pour les ressources locales.
+- `style.css` : styles et adaptations mobiles.
+- `app.js` : logique de la scène, compagnon et personnalisation.
+- `wip-sprites/` : sprites PNG, y compris les quatre poses d’Ophanim à la racine du dossier.
 
-## Mise à jour GitHub
-1. Décompressez l’archive.
-2. Ouvrez le dossier `WIP-Island`.
-3. Envoyez **tout le contenu** de ce dossier à la racine de votre dépôt GitHub.
-4. Acceptez le remplacement des anciens fichiers, puis attendez le redéploiement GitHub Pages.
+## Mise à jour GitHub depuis iPhone
+1. Décompresser l’archive dans Fichiers.
+2. Dans le dépôt, remplacer `index.html`, `style.css`, `app.js` et le contenu de `wip-sprites/` en conservant exactement cette arborescence.
+3. Valider tous les changements dans un commit.
+4. Attendre la fin du déploiement GitHub Pages dans Actions.
+5. Ouvrir le site dans un nouvel onglet Safari ou faire un rechargement forcé.
 
-Ne placez pas le dossier `WIP-Island` lui-même dans le dépôt : `index.html` doit être à la racine.
+Ne téléversez pas le dossier parent : `index.html` doit rester à la racine publiée.
 
-## Organisation
-- `index.html` : structure légère de la page.
-- `style.css` : styles et adaptations responsive.
-- `app.js` : logique de l’application et personnalisation.
-- `wip-sprites/` : sprites des compagnons et du personnage.
+## Contrôles effectués sur cette archive
+- Syntaxe JavaScript vérifiée avec `node --check`.
+- Références CSS/JS et chemins des sprites vérifiés.
+- Les 17 compagnons ont chacun quatre fichiers PNG attendus.
+- Les valeurs de profil localStorage sont normalisées avant le premier rendu.
 
-Les quatre sprites d’Ophanim sont directement dans `wip-sprites/` (`ophanim-idle.png`, `ophanim-happy.png`, `ophanim-sleep.png`, `ophanim-action.png`) et non dans un sous-dossier.
-
-Les images des compagnons sont chargées depuis leurs fichiers PNG séparés ; elles ne sont plus intégrées en base64 dans le JavaScript.
+Le rendu final doit encore être confirmé sur le vrai site GitHub Pages et sur l’iPhone.
