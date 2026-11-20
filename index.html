@@ -2,8 +2,8 @@
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>WIP Island : moi et mes compagnons</title>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261120-2"></head><body>
+
+<link rel="stylesheet" href="style.css?v=20261120-layers1"></head><body>
 <main class="win">
 <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>WIP Island : mon compagnon</span></div>
 <div class="scene" id="scene"></div>
@@ -14,14 +14,14 @@
 <section id="me">
 <div class="row">Nom <input type="text" id="nm" maxlength="14"></div>
 <div class="row">Petite phrase <input type="text" id="bio" maxlength="28" placeholder="maille à l’endroit"></div>
-<p class="sprite-note">Personnalise ton personnage avec des couches indépendantes. Tu peux combiner plusieurs accessoires et vêtements superposés ; tes choix sont sauvegardés automatiquement sur cet appareil.</p>
+<p class="sprite-note">Ton sprite original est conservé. Chaque couleur, vêtement et accessoire est ajouté comme un calque indépendant. Tu peux combiner plusieurs accessoires ; tes choix sont sauvegardés automatiquement.</p>
 <div class="custom-section"><h3>Couleur de peau</h3><div class="swatches" id="skin-choices"></div></div>
-<div class="custom-section"><h3>Coupe de cheveux</h3><div class="choice-grid" id="hair-choices"></div></div>
+<div class="custom-section"><h3>Calque de coiffure</h3><div class="choice-grid" id="hair-choices"></div></div>
 <div class="custom-section"><h3>Couleur des cheveux</h3><div class="swatches" id="hair-color-choices"></div></div>
 <div class="custom-section"><h3>Vêtements</h3><div class="choice-grid" id="outfit-choices"></div></div>
 <div class="custom-section"><h3>Couleur des vêtements</h3><div class="swatches" id="outfit-color-choices"></div></div>
-<div class="custom-section"><h3>Vêtements à superposer</h3><div class="choice-grid" id="clothing-layer-choices"></div></div>
-<div class="custom-section"><h3>Accessoires à superposer</h3><p class="sprite-note">Sélectionne autant d’éléments que tu veux. Le hijab est disponible ici aussi.</p><div class="choice-grid" id="accessory-choices"></div>
+<div class="custom-section"><h3>Calques de vêtements</h3><div class="choice-grid" id="clothing-layer-choices"></div></div>
+<div class="custom-section"><h3>Bibliothèque d’accessoires (multi-sélection)</h3><p class="sprite-note">Sélectionne autant d’éléments que tu veux. Le hijab est disponible ici aussi.</p><div class="choice-grid" id="accessory-choices"></div>
 <div class="swatches" id="accessory-color-choices"></div></div>
 </section>
 <section id="pal" hidden>
@@ -34,4 +34,4 @@
 </section>
 <details><summary>Profil à coller dans l’appli</summary><textarea id="out" readonly aria-label="Profil au format JSON"></textarea></details>
 </div></main>
-<script src="app.js?v=20261120-2" defer></script></body></html>
+<script src="app.js?v=20261120-layers1" defer></script></body></html>

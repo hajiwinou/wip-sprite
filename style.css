@@ -17,7 +17,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.3 'Pixelify 
 .pals .btn{min-height:88px}
 .pet-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:var(--pet-size,148px);height:var(--pet-size,148px);flex:none}.pet-deco{position:absolute;z-index:3;top:-7%;left:50%;transform:translateX(-50%);font-size:30px;line-height:1;filter:drop-shadow(1px 2px 0 rgba(29,20,112,.2));pointer-events:none}.pet-deco.none{display:none}.pet-wrap .pet-main{display:block}.hero-sprite{width:264px;height:264px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(29,20,112,.16));position:relative;z-index:1}.hero-stage{display:flex;align-items:flex-end;justify-content:center;flex:none}.who:first-of-type{z-index:2}.who:first-of-type .nm{font-weight:600;border-color:#ff4fa8}.sprite-note{font-size:13px;line-height:1.4;opacity:.8;margin:4px 0 10px}.hero-stage{width:242px;height:264px;display:flex;align-items:flex-end;justify-content:center;flex:none}
 input[type=range]{width:100%;accent-color:var(--pink)}
-.slow .pet-main,.slow .hero-sprite{animation:bob 2.4s steps(2) infinite}.fast .pet-main,.fast .hero-sprite{animation:bob .5s steps(2) infinite}.hop .pet-main,.hop .hero-sprite{animation:hop .6s steps(3) infinite}
+.slow .pet-main,.slow .yarn-face,.slow .hero-composite{animation:bob 2.4s steps(2) infinite}.fast .pet-main,.fast .yarn-face,.fast .hero-composite{animation:bob .5s steps(2) infinite}.hop .pet-main,.hop .yarn-face,.hop .hero-composite{animation:hop .6s steps(3) infinite}
 @keyframes bob{50%{transform:translateY(-6px)}}@keyframes hop{40%{transform:translateY(-16px)}}
 @media (max-width:420px){.scene{gap:0}.who{transform:scale(.88)}}
 @media (max-width:380px){.who{transform:scale(.77)}}
@@ -70,3 +70,23 @@ input[type=text]{width:min(58%,220px);min-width:0}
 .scene>.rug{z-index:0}
 .startup-error{position:relative;z-index:5;margin:auto;padding:12px;background:var(--paper);border:2px solid var(--ink);text-align:center;max-width:90%}
 @media(max-width:420px){.scene{height:clamp(230px,68vw,310px);min-height:230px;padding-bottom:16px}.hero-stage{width:clamp(104px,32vw,136px);height:clamp(150px,45vw,190px)}.hero-sprite{max-width:100%;max-height:100%}.pet-wrap{width:clamp(92px,29vw,122px);height:clamp(92px,29vw,122px)}.who{transform:none;max-width:50%}.nm{font-size:clamp(10px,3vw,13px);padding:2px 4px}}
+
+/* Avatar en calques : le sprite humain PNG est toujours la base. */
+.hero-composite{position:relative;width:clamp(108px,31vw,242px);height:clamp(170px,48vw,264px);display:flex;align-items:flex-end;justify-content:center;flex:none;image-rendering:pixelated}
+.hero-source{display:none}
+.hero-composite .hero-sprite{width:100%;height:100%;max-width:242px;max-height:264px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(29,20,112,.16));position:relative;z-index:1}
+.human-overlay{position:absolute;inset:0;z-index:2;pointer-events:none}
+.human-overlay svg{width:100%;height:100%;overflow:visible;image-rendering:pixelated}
+.pet-wrap.ophanim-float{transform:translateY(-24px)}
+.ophanim-float .pet-main{animation:ophanim-hover 2.2s ease-in-out infinite;filter:drop-shadow(0 10px 0 rgba(29,20,112,.12)) drop-shadow(0 0 9px rgba(255,216,74,.35))}
+@keyframes ophanim-hover{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-17px) rotate(2deg)}}
+.yarn-face{position:absolute;z-index:4;left:50%;top:49%;width:42%;height:22%;transform:translate(-50%,-50%);pointer-events:none}
+.yarn-face i{position:absolute;top:10%;width:9%;height:17%;border-radius:50%;background:#21152b;box-shadow:0 1px 0 #fff0fc}
+.yarn-face i:first-child{left:27%}.yarn-face i:nth-child(2){right:27%}
+.yarn-face b{position:absolute;left:43%;top:43%;width:14%;height:16%;border-bottom:3px solid #21152b;border-radius:0 0 10px 10px}
+.yarn-face:before,.yarn-face:after{content:'';position:absolute;top:38%;width:12%;height:7%;border-radius:50%;background:#ff8cae;opacity:.9}
+.yarn-face:before{left:12%}.yarn-face:after{right:12%}
+@media(max-width:420px){.hero-composite{width:clamp(104px,32vw,136px);height:clamp(150px,45vw,190px)}.hero-composite .hero-sprite{max-width:100%;max-height:100%}.pet-wrap.ophanim-float{transform:translateY(-16px)}}
+@media(prefers-reduced-motion:reduce){.ophanim-float .pet-main{animation:none!important}}
+
+@media(prefers-reduced-motion:reduce){.slow .yarn-face,.fast .yarn-face,.hop .yarn-face{animation:none!important}}

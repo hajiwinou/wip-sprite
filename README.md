@@ -1,24 +1,17 @@
-# WIP Island — correctif complet GitHub Pages
+# WIP Island — base propre à calques
 
-## Contenu
-- `index.html` : page d’entrée, avec paramètres anti-cache pour les ressources locales.
-- `style.css` : styles et adaptations mobiles.
-- `app.js` : logique de la scène, compagnon et personnalisation.
-- `wip-sprites/` : sprites PNG, y compris les quatre poses d’Ophanim à la racine du dossier.
+## Structure
+- `index.html` : structure de la page.
+- `style.css` : mise en page responsive et animations.
+- `app.js` : interactions, sauvegarde et composition des calques.
+- `wip-sprites/human/` : quatre poses du sprite humain original.
+- `wip-sprites/human/layers/` : documentation de la bibliothèque de calques.
+- `wip-sprites/ophanim-*.png` : les quatre poses découpées depuis le sprite Ophanim fourni.
 
-## Mise à jour GitHub depuis iPhone
-1. Décompresser l’archive dans Fichiers.
-2. Dans le dépôt, remplacer `index.html`, `style.css`, `app.js` et le contenu de `wip-sprites/` en conservant exactement cette arborescence.
-3. Valider tous les changements dans un commit.
-4. Attendre la fin du déploiement GitHub Pages dans Actions.
-5. Ouvrir le site dans un nouvel onglet Safari ou faire un rechargement forcé.
+## Important
+Le personnage est maintenant chargé depuis `wip-sprites/human/*.png`. Le générateur pixel-art de l'ancien humain a été retiré du chemin de rendu. Les couleurs de peau, cheveux et vêtements sont appliquées au sprite PNG par masques de pixels. Les coiffures et accessoires sont composés au-dessus comme calques SVG indépendants. Les accessoires sont multi-sélectionnables.
 
-Ne téléversez pas le dossier parent : `index.html` doit rester à la racine publiée.
+Lovelace reçoit un visage expressif ajouté au rendu. Ophanim utilise le sprite fourni et une animation de lévitation.
 
-## Contrôles effectués sur cette archive
-- Syntaxe JavaScript vérifiée avec `node --check`.
-- Références CSS/JS et chemins des sprites vérifiés.
-- Les 17 compagnons ont chacun quatre fichiers PNG attendus.
-- Les valeurs de profil localStorage sont normalisées avant le premier rendu.
-
-Le rendu final doit encore être confirmé sur le vrai site GitHub Pages et sur l’iPhone.
+## Publication GitHub Pages
+Conserver les chemins et dossiers tels quels. Téléverser le contenu de ce dossier à la racine de la branche publiée par GitHub Pages.
