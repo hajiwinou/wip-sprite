@@ -14,7 +14,7 @@ const PN={ophanim:'Ophanim',bunny:'Lemon',cat:'Fibonacci',turtle:'Leto',yarn:'Lo
 const DEFAULT_COMPANION_NAMES={...PN};
 let S={name:'Moi',bio:'',skin:0,hair:1,outfit:5,accent:0,hs:'sprite',os:'sweater',layers:[],accs:[],petAcc:'none',petAccent:0,pal:'bunny',cn:'Lemon',cNames:{...DEFAULT_COMPANION_NAMES},mode:'sleep',tab:'me',spriteHue:0};
 // Nouvelle clé de sauvegarde : les anciens accessoires dessinés ne peuvent plus contaminer ce profil refondu.
-try{Object.assign(S,JSON.parse(localStorage.getItem('wipProfileLayersV1')||'{}'))}catch(e){}
+try{Object.assign(S,JSON.parse(localStorage.getItem('wipProfileStudioV2')||'{}'))}catch(e){}
 S.layers=Array.isArray(S.layers)?S.layers:[];S.accs=Array.isArray(S.accs)?S.accs:[];S.cNames={...DEFAULT_COMPANION_NAMES,...(S.cNames||{})};
 const clamp=(v,n)=>Number.isInteger(Number(v))&&Number(v)>=0&&Number(v)<n?Number(v):0;
 S.skin=clamp(S.skin,SKIN_COLORS.length);S.hair=clamp(S.hair,HAIR_COLORS.length);S.outfit=clamp(S.outfit,OUTFIT_COLORS.length);S.accent=clamp(S.accent,ACCENT_COLORS.length);S.petAccent=clamp(S.petAccent,7);
@@ -101,15 +101,16 @@ const petPose=()=>S.mode==='sleep'?'sleep':S.mode==='knit'?'happy':'action';
 const t0=Date.now();
 const clock=()=>{const s=Math.floor((Date.now()-t0)/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
 const bubble=()=>S.mode==='knit'?'♪ '+clock():S.mode==='done'?'★ fini !':'zzz…';
-const PET_SIZE={ophanim:190,giraffe:212,llama:211,sheep:211,bunny:191,cat:195,turtle:205,koala:193,dalmatian:193,narwhal:202,octo:199,snail:184,frog:193,starfish:184,button:173,yarn:184,crab:164,kiwi:170};
-function petWithAccessory(kind,pose,cls){const wrap=document.createElement('div');wrap.className='pet-wrap '+cls+(['ophanim','kiwi'].includes(kind)?' '+kind+'-float':'');wrap.style.setProperty('--pet-size',(PET_SIZE[kind]||156)+'px');wrap.append(petImage(kind,pose,'pet-main'));if(kind==='yarn'){wrap.classList.add('yarn-companion');const face=document.createElement('span');face.className='yarn-face';face.setAttribute('aria-label','Visage mignon de Lovelace');face.innerHTML='<i></i><i></i><b></b>';wrap.append(face)}const deco=document.createElement('span');deco.className='pet-deco '+(S.petAcc||'none');deco.textContent=({none:'',bow:'🎀',cowboy:'🤠',flower:'🌼',crown:'👑',cap:'🧢',beret:'🎨',bonnet:'🧶',glasses:'👓',scarf:'🧣',halo:'😇',wings:'🪽'})[S.petAcc]||'';deco.style.filter='hue-rotate('+(S.petAccent*55)+'deg)';wrap.append(deco);return wrap;}
+const PET_SIZE={ophanim:190,giraffe:212,llama:211,sheep:211,bunny:191,cat:195,turtle:205,koala:193,dalmatian:193,narwhal:202,octo:199,snail:184,frog:193,starfish:184,button:173,yarn:132,crab:164,kiwi:104};
+function petWithAccessory(kind,pose,cls){const wrap=document.createElement('div');wrap.className='pet-wrap '+cls+(['ophanim','kiwi'].includes(kind)?' '+kind+'-float':'');wrap.style.setProperty('--pet-size',(PET_SIZE[kind]||156)+'px');wrap.append(petImage(kind,pose,'pet-main'));if(kind==='yarn')wrap.classList.add('yarn-companion');const deco=document.createElement('span');deco.className='pet-deco '+(S.petAcc||'none');deco.textContent=({none:'',bow:'🎀',cowboy:'🤠',flower:'🌼',crown:'👑',cap:'🧢',beret:'🎨',bonnet:'🧶',glasses:'👓',scarf:'🧣',halo:'😇',wings:'🪽'})[S.petAcc]||'';deco.style.filter='hue-rotate('+(S.petAccent*55)+'deg)';wrap.append(deco);return wrap;}
 function scene(){document.documentElement.style.setProperty('--sprite-hue',(S.spriteHue||0)+'deg');const sc=$('#scene');sc.innerHTML='<div class="rug"></div>';
 const a=document.createElement('div');a.className='who '+({sleep:'slow',knit:'fast',done:'hop'})[S.mode];const stage=document.createElement('div');stage.className='hero-stage';stage.append(humanSprite());a.append(stage);const n=document.createElement('div');n.className='nm';n.textContent=S.name||'Moi';a.append(n);
 const b=document.createElement('div');b.className='who '+({sleep:'slow',knit:'fast',done:'hop'})[S.mode];b.innerHTML='<div class="bub" id="bub"></div>';b.append(petWithAccessory(S.pal,petPose(),'pet-stage'));const m=document.createElement('div');m.className='nm';m.textContent=S.cn||'Compagnon';b.append(m);
 sc.append(a,b);$('#bub').textContent=bubble()}
 function set(k,v){S[k]=v;if(k==='pal'){S.cn=S.cNames[v]||DEFAULT_COMPANION_NAMES[v];}render()}
 function swatches(id,colors,key){const box=$('#'+id);if(!box)return;box.innerHTML='';colors.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='sw';b.style.background=c;b.dataset.choice=key;b.dataset.value=i;b.setAttribute('aria-label','Couleur '+(i+1));b.setAttribute('aria-pressed',String(Number(S[key])===i));b.onclick=()=>{S[key]=i;render()};box.append(b)})}
-function buildChoiceList(id,items,key){const box=$('#'+id);if(!box)return;box.innerHTML='';Object.entries(items).forEach(([value,label])=>{const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=label;b.dataset.choice=key;b.dataset.value=value;b.onclick=()=>{if(key==='accs'||key==='layers'){S[key]=S[key].includes(value)?S[key].filter(x=>x!==value):[...S[key],value]}else S[key]=value;render()};box.append(b)})}
+const CHOICE_ART={sprite:'✧',fringe:'⌁',curtain:'〰',bun:'◉',twin:'❀',afro:'✿',braids:'≋',ponytail:'⌁',tee:'♡',sweater:'♧',hoodie:'☁',dress:'♢',overalls:'✿',cardigan:'▤',jacket:'▧',apron:'♧',cape:'✧',scarf:'〰',none:'○',bow:'🎀',flower:'✿',headband:'⌒',beret:'◒',cap:'⌑',necklace:'◇',earrings:'✧',backpack:'▣',crown:'♕',glasses:'◉',sunglasses:'◐',hairclip:'❀',hijab:'♡',cowboy:'♧',bonnet:'☁',halo:'✧',wings:'⌁'};
+function buildChoiceList(id,items,key){const box=$('#'+id);if(!box)return;box.innerHTML='';Object.entries(items).forEach(([value,label])=>{const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.choice=key;b.dataset.value=value;const art=document.createElement('span');art.className='choice-art';art.textContent=CHOICE_ART[value]||'✧';const caption=document.createElement('span');caption.className='choice-label';caption.textContent=label;b.append(art,caption);b.onclick=()=>{if(key==='accs'||key==='layers'){S[key]=S[key].includes(value)?S[key].filter(x=>x!==value):[...S[key],value]}else S[key]=value;render()};box.append(b)})}
 buildChoiceList('hair-choices',HN,'hs');buildChoiceList('clothing-layer-choices',{cardigan:'Gilet',jacket:'Veste',apron:'Tablier',cape:'Cape',scarf:'Écharpe'},'layers');swatches('skin-choices',SKIN_COLORS,'skin');swatches('hair-color-choices',HAIR_COLORS,'hair');buildChoiceList('outfit-choices',ON,'os');swatches('outfit-color-choices',OUTFIT_COLORS,'outfit');buildChoiceList('accessory-choices',AN,'accs');swatches('accessory-color-choices',ACCENT_COLORS,'accent');
 function stp(id,k,names){const box=$('#p-'+id),keys=Object.keys(names);box.innerHTML='<button class="btn" aria-label="Précédent">◀</button><span></span><button class="btn" aria-label="Suivant">▶</button>';
 const go=d=>set(k,keys[(keys.indexOf(S[k])+d+keys.length)%keys.length]);box.children[0].onclick=()=>go(-1);box.children[2].onclick=()=>go(1)}
@@ -118,7 +119,7 @@ Object.keys(PN).forEach(k=>{const b=document.createElement('button');b.className
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>set('mode',b.dataset.m));
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>set('tab',b.dataset.t));
 $('#sprite-hue').value=S.spriteHue||0;$('#hue-value').textContent=(S.spriteHue||0)+'°';
-$('#sprite-hue').oninput=e=>{S.spriteHue=Number(e.target.value);$('#hue-value').textContent=S.spriteHue+'°';document.documentElement.style.setProperty('--sprite-hue',S.spriteHue+'deg');try{localStorage.setItem('wipProfileLayersV1',JSON.stringify(S))}catch(err){}};
+$('#sprite-hue').oninput=e=>{S.spriteHue=Number(e.target.value);$('#hue-value').textContent=S.spriteHue+'°';document.documentElement.style.setProperty('--sprite-hue',S.spriteHue+'deg');try{localStorage.setItem('wipProfileStudioV2',JSON.stringify(S))}catch(err){}};
 $('#nm').oninput=e=>{S.name=e.target.value;render(1)};$('#bio').oninput=e=>{S.bio=e.target.value;render(1)};$('#cn').oninput=e=>{S.cn=e.target.value;S.cNames[S.pal]=S.cn;render(1)};
 function render(typing){scene();
 document.querySelectorAll('[data-k][data-v]').forEach(b=>b.setAttribute('aria-pressed',String(S[b.dataset.k]==b.dataset.v)));
@@ -128,8 +129,9 @@ document.querySelectorAll('[data-pal]').forEach(b=>b.setAttribute('aria-pressed'
 document.querySelectorAll('[data-choice]').forEach(b=>{const k=b.dataset.choice,v=b.dataset.value;const selected=(k==='accs'||k==='layers')?S[k].includes(v):String(S[k])===String(v);b.setAttribute('aria-pressed',String(selected))});
 $('#p-petacc span').textContent=PAN[S.petAcc]||'Aucun';
 $('#me').hidden=S.tab!=='me';$('#pal').hidden=S.tab!=='pal';
+document.querySelectorAll('[data-editor-panel]').forEach(p=>p.hidden=false);
 S.cn=S.cNames[S.pal]||DEFAULT_COMPANION_NAMES[S.pal];if(!typing){$('#nm').value=S.name;$('#bio').value=S.bio;$('#cn').value=S.cn}
 $('#out').value=JSON.stringify(S);
-try{localStorage.setItem('wipProfileLayersV1',JSON.stringify(S))}catch(e){}}
+try{localStorage.setItem('wipProfileStudioV2',JSON.stringify(S))}catch(e){}}
 setInterval(()=>{if(S.mode==='knit'&&$('#bub'))$('#bub').textContent=bubble()},1000);
 try{render()}catch(error){console.error('WIP Island : erreur au démarrage',error);const sceneEl=$('#scene');if(sceneEl){sceneEl.innerHTML='';const msg=document.createElement('p');msg.className='startup-error';msg.textContent='Oups ! WIP Island n’a pas réussi à charger. Recharge la page ou vérifie les fichiers.';sceneEl.append(msg)}}
