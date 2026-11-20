@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WIP Island : moi et mes compagnons</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffc8f0;--paper:#fff0fc;--ink:#1d1470;--blue:#94a6ee;--pink:#ff4fa8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150f45;--paper:#241a78;--ink:#ffe6fb;--blue:#4a3bea}}
+:root[data-theme="dark"]{--bg:#150f45;--paper:#241a78;--ink:#ffe6fb;--blue:#4a3bea}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.3 'Pixelify Sans','Courier New',monospace}
+.win{max-width:460px;margin:12px auto;border:4px solid var(--ink);background:var(--paper);box-shadow:5px 5px 0 var(--ink)}
+.bar{display:flex;gap:6px;align-items:center;padding:6px 10px;border-bottom:4px solid var(--ink);background:var(--blue);font-weight:600}
+.dot{width:12px;height:12px;border:3px solid var(--ink);background:var(--paper)}
+.scene{position:relative;margin:10px;height:260px;border:4px solid #4a3bea;background:linear-gradient(#ffb3f5,#ffb3f5) left bottom/100% 36% no-repeat,repeating-linear-gradient(90deg,transparent 0 70px,#4a3bea 70px 74px),repeating-linear-gradient(#4a3bea 0 4px,#7389ff 4px 40px);display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:22px;overflow:hidden;color:#1d1470}
+.rug{position:absolute;left:50%;bottom:10px;width:250px;height:46px;margin-left:-125px;border:4px solid #4a3bea;border-radius:50%;background:repeating-conic-gradient(#fff0fc 0 25%,#ffb3f5 0 50%) 0 0/16px 16px}
+.who{position:relative;display:flex;flex-direction:column;align-items:center}
+.bub{position:absolute;top:2px;background:#fff0fc;border:3px solid #4a3bea;padding:0 6px;font-size:14px;white-space:nowrap}
+.nm{font-size:14px;margin-top:2px;background:#fff0fc;border:3px solid #4a3bea;padding:0 6px}
+.pet-main{width:112px;height:112px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(29,20,112,.12))}
+.pet-thumb{width:58px;height:58px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto 2px}
+.pals .btn{min-height:88px}
+.slow .pet-main{animation:bob 2.4s steps(2) infinite}.fast .pet-main{animation:bob .5s steps(2) infinite}.hop .pet-main{animation:hop .6s steps(3) infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}@keyframes hop{40%{transform:translateY(-16px)}}
+@media (prefers-reduced-motion:reduce){.who img{animation:none!important}}
+.pad{padding:0 10px 12px}
+.btn{font:inherit;color:var(--ink);background:var(--paper);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:5px 10px;cursor:pointer}
+.btn[aria-pressed=true],.btn[aria-selected=true]{background:var(--blue)}
+.btn:focus-visible,.sw:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.modes,.tabs{display:flex;gap:8px;margin:0 0 12px}.modes .btn,.tabs .btn{flex:1}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:9px 0}
+.sws{display:flex;gap:6px}.sw{width:28px;height:28px;padding:0;border:3px solid var(--ink);cursor:pointer}
+.sw[aria-pressed=true]{outline:3px solid var(--ink);outline-offset:2px}
+.stp{display:flex;align-items:center;gap:8px}.stp span{min-width:86px;text-align:center}
+input[type=text]{font:inherit;color:var(--ink);background:var(--paper);border:3px solid var(--ink);padding:4px 8px;width:150px}
+.pals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.pals .btn{padding:4px 0;display:flex;flex-direction:column;align-items:center;font-size:14px}
+textarea{width:100%;box-sizing:border-box;height:90px;font:13px 'Courier New',monospace;background:var(--paper);color:var(--ink);border:3px solid var(--ink)}
+[hidden]{display:none!important}
+</style></head><body>
+<main class="win">
+<div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>WIP Island : mon compagnon</span></div>
+<div class="scene" id="scene"></div>
+<div class="pad">
+<div class="modes" role="group" aria-label="État de la session">
+<button class="btn" data-m="sleep">Pause</button><button class="btn" data-m="knit">Je tricote</button><button class="btn" data-m="done">Projet fini</button></div>
+<div class="tabs" role="tablist"><button class="btn" role="tab" data-t="me">Moi</button><button class="btn" role="tab" data-t="pal">Compagnon</button></div>
+<section id="me">
+<div class="row">Nom <input type="text" id="nm" maxlength="14"></div>
+<div class="row">Petite phrase <input type="text" id="bio" maxlength="28" placeholder="maille à l’endroit"></div>
+<div class="row">Peau <span class="sws" id="s-skin"></span></div>
+<div class="row">Cheveux <span class="sws" id="s-hair"></span></div>
+<div class="row">Coiffure <span class="stp" id="p-hs"></span></div>
+<div class="row">Haut <span class="sws" id="s-outfit"></span></div>
+<div class="row">Accessoire <span class="stp" id="p-acc"></span></div>
+<div class="row">Couleur de l’accessoire <span class="sws" id="s-accent"></span></div>
+</section>
+<section id="pal" hidden>
+<div class="pals" id="pals"></div>
+<div class="row">Nom <input type="text" id="cn" maxlength="14"></div>
+</section>
+<details><summary>Profil à coller dans l’appli</summary><textarea id="out" readonly aria-label="Profil au format JSON"></textarea></details>
+</div></main>
+<script>
+/* Sprites 22x24, style « Choose ur pal » : contour marine automatique, couleurs plates, yeux fermés, joues roses.
+   Chaque ligne décrit la moitié gauche (x 0 à 10), le miroir est ajouté tout seul.
+   Lettres : s peau, h cheveux, o haut, a accessoire, b corps du compagnon, p rose, k encre, w blanc, d chaussures. Majuscule = même couleur, plus foncée. */
+const W=22,H=24;
+const P={skin:['#ffe0c7','#f2b98f','#c98a5e','#8a5a3b','#5a3a28'],hair:['#2a1f6e','#7a4a2a','#e8b84a','#ff4fb8','#94a6ee','#ffe6fb'],outfit:['#94a6ee','#ff4fb8','#4a3bea','#a0c8ff','#8fe3c0','#ffe6fb'],accent:['#ff4fb8','#ffd84a','#8fe3c0','#ffe6fb','#4a3bea']};
+const blank=()=>Array.from({length:H},()=>Array(W).fill('.'));
+const paint=(g,rows,m=1)=>{for(const y in rows)[...rows[y]].forEach((c,x)=>{if(c!=='.'){g[y][x]=c;if(m)g[y][W-1-x]=c}})};
+const ell=(g,cx,cy,rx,ry,f)=>{for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(((x-cx)/rx)**2+((y-cy)/ry)**2<=1)g[y][x]=f(x,y)};
+const rect=(g,x,y,w,h,c)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)g[j][i]=c};
+const R=(o,a,b,s)=>{for(let y=a;y<=b;y++)o[y]=s;return o};
+const sh=h=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*.8).toString(16).padStart(2,'0')).join('');
+const cols=m=>{const o={p:'#ff8ec7',k:'#1d1470',w:'#fff',d:'#4a3bea'};for(const k in m){o[k]=m[k];o[k.toUpperCase()]=sh(m[k])}return o};
+
+/* Personnage */
+const BASE=R({5:"......sssss",6:"....sssssss",13:"....sssssss",14:"......ooooo",15:"..ssooooooo",16:"....ooooooo",17:"....ooooooo",18:"....OOOOOOO",19:"....sss",20:"...dddd"},7,12,"...ssssssss");
+const FACE={9:"......kk",10:"....pp",11:"..........k"};
+const HA={4:"......hhhhh",5:"....hhhhhhh",6:"...hhhhhhhh",7:"...hhh.hhhh",8:"...h",9:"...h",10:"...h"};
+const HAIR={A:HA,B:{...HA,1:"....hhh",2:"...hhhhh",3:"...hhhhh"},C:R({...HA},11,14,"...hh")};
+const ACC={none:{},bonnet:{0:"..........w",1:"........www",2:"......aaaaa",3:"....aaaaaaa",4:"...aaaaaaaa",5:"...AAAAAAAA",6:"...AAAAAAAA"},
+echarpe:R({14:"....aaaaaaa",15:"....AAAAAAA"},16,18,"........aa"),
+lunettes:{8:".....aaaa",9:".....a..aaa",10:".....aaaa"}};
+function hero(){const g=blank();[BASE,FACE,HAIR[S.hs],ACC[S.acc]].forEach(l=>paint(g,l));return g}
+
+const HN={A:'Pixie',B:'Chignons',C:'Longs'},AN={none:'Aucun',bonnet:'Bonnet',echarpe:'Écharpe',lunettes:'Lunettes'};
+let S={name:'Maille',bio:'',skin:0,hs:'B',hair:0,outfit:0,acc:'bonnet',accent:0,pal:'bunny',cn:'Pompon',mode:'sleep',tab:'me'};
+try{Object.assign(S,JSON.parse(localStorage.getItem('wipProfile')||'{}'))}catch(e){}
+delete S.cbody; delete S.cacc;
+const $=s=>document.querySelector(s);
+function draw(g,col,px){const c=document.createElement('canvas');c.width=W+2;c.height=H+2;const x=c.getContext('2d');const f=(i,j)=>g[i]&&g[i][j]&&g[i][j]!=='.';
+for(let i=-1;i<=H;i++)for(let j=-1;j<=W;j++){if(f(i,j)){x.fillStyle=col[g[i][j]]||'#000';x.fillRect(j+1,i+1,1,1)}else if(f(i-1,j)||f(i+1,j)||f(i,j-1)||f(i,j+1)){x.fillStyle='#1d1470';x.fillRect(j+1,i+1,1,1)}}
+c.style.cssText='width:'+(W+2)*px+'px;height:'+(H+2)*px+'px;image-rendering:pixelated';return c}
+const heroC=px=>draw(hero(),cols({s:P.skin[S.skin],h:P.hair[S.hair],o:P.outfit[S.outfit],a:P.accent[S.accent]}),px);
+
+/* Compagnons illustrés : sprites PNG dessinés individuellement.
+   Chaque compagnon possède quatre poses : idle, happy, sleep et action. */
+const PN={bunny:'Lapin',cat:'Chat',turtle:'Tortue',yarn:'Pelote',octo:'Poulpe',narwhal:'Narval'};
+const petImage=(kind,pose='idle',className='pet-sprite')=>{
+  const img=document.createElement('img');
+  img.className=className;
+  img.src=`wip-sprites/${kind}-${pose}.png`;
+  img.alt=PN[kind]||'Compagnon';
+  img.width=192; img.height=192;
+  img.draggable=false;
+  img.onerror=()=>{img.alt='Sprite indisponible : '+(PN[kind]||kind);};
+  return img;
+};
+const petPose=()=>S.mode==='sleep'?'sleep':S.mode==='knit'?'happy':'action';
+const t0=Date.now();
+const clock=()=>{const s=Math.floor((Date.now()-t0)/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const bubble=()=>S.mode==='knit'?'♪ '+clock():S.mode==='done'?'★ fini !':'zzz…';
+function scene(){const sc=$('#scene');sc.innerHTML='<div class="rug"></div>';
+const a=document.createElement('div');a.className='who';a.append(heroC(6));const n=document.createElement('div');n.className='nm';n.textContent=S.name||'Moi';a.append(n);
+const b=document.createElement('div');b.className='who '+({sleep:'slow',knit:'fast',done:'hop'})[S.mode];b.innerHTML='<div class="bub" id="bub"></div>';b.append(petImage(S.pal,petPose(),'pet-main'));const m=document.createElement('div');m.className='nm';m.textContent=S.cn||'Compagnon';b.append(m);
+sc.append(a,b);$('#bub').textContent=bubble()}
+function set(k,v){S[k]=v;render()}
+function sws(id,k){const box=$('#s-'+id);P[k].forEach((c,i)=>{const b=document.createElement('button');b.className='sw';b.style.background=c;b.dataset.k=k;b.dataset.v=i;b.setAttribute('aria-label','Couleur '+(i+1));b.onclick=()=>set(k,i);box.append(b)})}
+function stp(id,k,names){const box=$('#p-'+id),keys=Object.keys(names);box.innerHTML='<button class="btn" aria-label="Précédent">◀</button><span></span><button class="btn" aria-label="Suivant">▶</button>';
+const go=d=>set(k,keys[(keys.indexOf(S[k])+d+keys.length)%keys.length]);box.children[0].onclick=()=>go(-1);box.children[2].onclick=()=>go(1)}
+sws('skin','skin');sws('hair','hair');sws('outfit','outfit');sws('accent','accent');stp('hs','hs',HN);stp('acc','acc',AN);
+Object.keys(PN).forEach(k=>{const b=document.createElement('button');b.className='btn';b.dataset.pal=k;b.append(petImage(k,'idle','pet-thumb'));b.append(PN[k]);b.onclick=()=>set('pal',k);$('#pals').append(b)});
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>set('mode',b.dataset.m));
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>set('tab',b.dataset.t));
+$('#nm').oninput=e=>{S.name=e.target.value;render(1)};$('#bio').oninput=e=>{S.bio=e.target.value;render(1)};$('#cn').oninput=e=>{S.cn=e.target.value;render(1)};
+function render(typing){scene();
+document.querySelectorAll('[data-k][data-v]').forEach(b=>b.setAttribute('aria-pressed',String(S[b.dataset.k]==b.dataset.v)));
+document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed',String(S.mode===b.dataset.m)));
+document.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-selected',String(S.tab===b.dataset.t)));
+document.querySelectorAll('[data-pal]').forEach(b=>b.setAttribute('aria-pressed',String(S.pal===b.dataset.pal)));
+$('#p-hs span').textContent=HN[S.hs];$('#p-acc span').textContent=AN[S.acc];
+$('#me').hidden=S.tab!=='me';$('#pal').hidden=S.tab!=='pal';
+if(!typing){$('#nm').value=S.name;$('#bio').value=S.bio;$('#cn').value=S.cn}
+$('#out').value=JSON.stringify(S);
+try{localStorage.setItem('wipProfile',JSON.stringify(S))}catch(e){}}
+setInterval(()=>{if(S.mode==='knit'&&$('#bub'))$('#bub').textContent=bubble()},1000);
+render();
+</script></body></html>
