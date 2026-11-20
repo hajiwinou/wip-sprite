@@ -14,14 +14,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.3 'Pixelify 
 .dot{width:12px;height:12px;border:3px solid var(--ink);background:var(--paper)}
 .scene{position:relative;margin:10px;height:310px;min-height:290px;border:4px solid #4a3bea;background:linear-gradient(#ffb3f5,#ffb3f5) left bottom/100% 36% no-repeat,repeating-linear-gradient(90deg,transparent 0 70px,#4a3bea 70px 74px),repeating-linear-gradient(#4a3bea 0 4px,#7389ff 4px 40px);display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:22px;overflow:hidden;color:#1d1470}
 .rug{position:absolute;left:50%;bottom:10px;width:250px;height:46px;margin-left:-125px;border:4px solid #4a3bea;border-radius:50%;background:repeating-conic-gradient(#fff0fc 0 25%,#ffb3f5 0 50%) 0 0/16px 16px}
-.who{position:relative;display:flex;flex-direction:column;align-items:center}
+.who{position:relative;display:flex;flex-direction:column;align-items:center;transform-origin:bottom center}
 .bub{position:absolute;top:-34px;left:50%;transform:translateX(-50%);background:#fff0fc;border:3px solid #4a3bea;padding:0 6px;font-size:14px;white-space:nowrap;z-index:2}
 .nm{font-size:14px;margin-top:2px;background:#fff0fc;border:3px solid #4a3bea;padding:0 6px}
 .pet-main{width:var(--pet-size,148px);height:var(--pet-size,148px);object-fit:contain;image-rendering:pixelated;filter:hue-rotate(var(--sprite-hue,0deg)) drop-shadow(0 4px 0 rgba(29,20,112,.12));position:relative;z-index:1}
 .pet-thumb{width:58px;height:58px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto 2px;filter:hue-rotate(var(--sprite-hue,0deg))}
-.pals .btn{min-height:88px}\n.pet-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:var(--pet-size,148px);height:var(--pet-size,148px);flex:none}.pet-deco{position:absolute;z-index:3;top:-7%;left:50%;transform:translateX(-50%);font-size:30px;line-height:1;filter:drop-shadow(1px 2px 0 rgba(29,20,112,.2));pointer-events:none}.pet-deco.none{display:none}.pet-wrap .pet-main{display:block}.hero-avatar{image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(29,20,112,.16));transform-origin:bottom center}\ninput[type=range]{width:100%;accent-color:var(--pink)}
-.slow .pet-main{animation:bob 2.4s steps(2) infinite}.fast .pet-main{animation:bob .5s steps(2) infinite}.hop .pet-main{animation:hop .6s steps(3) infinite}
+.pals .btn{min-height:88px}\n.pet-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:var(--pet-size,148px);height:var(--pet-size,148px);flex:none}.pet-deco{position:absolute;z-index:3;top:-7%;left:50%;transform:translateX(-50%);font-size:30px;line-height:1;filter:drop-shadow(1px 2px 0 rgba(29,20,112,.2));pointer-events:none}.pet-deco.none{display:none}.pet-wrap .pet-main{display:block}.hero-sprite{width:192px;height:192px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(29,20,112,.16));position:relative;z-index:1}.sprite-note{font-size:13px;line-height:1.4;opacity:.8;margin:4px 0 10px}.hero-stage{width:192px;height:192px;display:flex;align-items:flex-end;justify-content:center;flex:none}\ninput[type=range]{width:100%;accent-color:var(--pink)}
+.slow .pet-main,.slow .hero-sprite{animation:bob 2.4s steps(2) infinite}.fast .pet-main,.fast .hero-sprite{animation:bob .5s steps(2) infinite}.hop .pet-main,.hop .hero-sprite{animation:hop .6s steps(3) infinite}
 @keyframes bob{50%{transform:translateY(-6px)}}@keyframes hop{40%{transform:translateY(-16px)}}
+@media (max-width:420px){.scene{gap:0}.who{transform:scale(.84)}}
+@media (max-width:380px){.who{transform:scale(.77)}}
 @media (prefers-reduced-motion:reduce){.who img{animation:none!important}}
 .pad{padding:0 10px 12px}
 .btn{font:inherit;color:var(--ink);background:var(--paper);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:5px 10px;cursor:pointer}
@@ -48,13 +50,7 @@ textarea{width:100%;box-sizing:border-box;height:90px;font:13px 'Courier New',mo
 <section id="me">
 <div class="row">Nom <input type="text" id="nm" maxlength="14"></div>
 <div class="row">Petite phrase <input type="text" id="bio" maxlength="28" placeholder="maille à l’endroit"></div>
-<div class="row">Peau <span class="sws" id="s-skin"></span></div>
-<div class="row">Cheveux <span class="sws" id="s-hair"></span></div>
-<div class="row">Coiffure <span class="stp" id="p-hs"></span></div><div style="font-size:13px;opacity:.8;margin:-5px 0 8px">22 coiffures, dont le hijab — couleurs modifiables</div>
-<div class="row">Style de tenue <span class="stp" id="p-os"></span></div>
-<div class="row">Couleur de la tenue <span class="sws" id="s-outfit"></span></div>
-<div class="row">Accessoire <span class="stp" id="p-acc"></span></div>
-<div class="row">Couleur de l’accessoire <span class="sws" id="s-accent"></span></div>
+<p class="sprite-note">Ton avatar est maintenant un vrai petit sprite illustré, avec quatre poses assorties à l’univers de WIP Island. Les réglages de nom et de phrase restent personnalisables.</p>
 </section>
 <section id="pal" hidden>
 <div class="pals" id="pals"></div>
@@ -174,21 +170,23 @@ const petImage=(kind,pose='idle',className='pet-sprite')=>{
   img.onerror=()=>{img.alt='Sprite indisponible : '+(PN[kind]||kind);};
   return img;
 };
+const humanPose=()=>S.mode==='sleep'?'sleep':S.mode==='knit'?'action':'happy';
+const humanSprite=()=>{const img=document.createElement('img');img.className='hero-sprite';img.alt='Avatar humain';img.src='wip-sprites/human/'+humanPose()+'.png';return img};
 const petPose=()=>S.mode==='sleep'?'sleep':S.mode==='knit'?'happy':'action';
 const t0=Date.now();
 const clock=()=>{const s=Math.floor((Date.now()-t0)/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
 const bubble=()=>S.mode==='knit'?'♪ '+clock():S.mode==='done'?'★ fini !':'zzz…';
-const PET_SIZE={giraffe:220,llama:190,sheep:174,bunny:170,cat:170,turtle:176,koala:168,dalmatian:166,narwhal:170,octo:174,snail:164,frog:164,starfish:158,button:156,yarn:156,crab:148};
+const PET_SIZE={giraffe:212,llama:211,sheep:211,bunny:191,cat:195,turtle:205,koala:193,dalmatian:193,narwhal:202,octo:199,snail:184,frog:193,starfish:184,button:173,yarn:184,crab:164};
 function petWithAccessory(kind,pose,cls){const wrap=document.createElement('div');wrap.className='pet-wrap '+cls;wrap.style.setProperty('--pet-size',(PET_SIZE[kind]||156)+'px');wrap.append(petImage(kind,pose,'pet-main'));const deco=document.createElement('span');deco.className='pet-deco '+(S.petAcc||'none');deco.textContent=({none:'',bow:'🎀',cowboy:'🤠',flower:'🌼',crown:'👑',cap:'🧢',beret:'🎨',bonnet:'🧶',glasses:'👓',scarf:'🧣',halo:'😇',wings:'🪽'})[S.petAcc]||'';deco.style.filter='hue-rotate('+(S.petAccent*55)+'deg)';wrap.append(deco);return wrap;}
 function scene(){document.documentElement.style.setProperty('--sprite-hue',(S.spriteHue||0)+'deg');const sc=$('#scene');sc.innerHTML='<div class="rug"></div>';
-const a=document.createElement('div');a.className='who';const human=heroC(3);human.style.width='150px';human.style.height='150px';a.append(human);const n=document.createElement('div');n.className='nm';n.textContent=S.name||'Moi';a.append(n);
+const a=document.createElement('div');a.className='who '+({sleep:'slow',knit:'fast',done:'hop'})[S.mode];const stage=document.createElement('div');stage.className='hero-stage';stage.append(humanSprite());a.append(stage);const n=document.createElement('div');n.className='nm';n.textContent=S.name||'Moi';a.append(n);
 const b=document.createElement('div');b.className='who '+({sleep:'slow',knit:'fast',done:'hop'})[S.mode];b.innerHTML='<div class="bub" id="bub"></div>';b.append(petWithAccessory(S.pal,petPose(),'pet-stage'));const m=document.createElement('div');m.className='nm';m.textContent=S.cn||'Compagnon';b.append(m);
 sc.append(a,b);$('#bub').textContent=bubble()}
 function set(k,v){S[k]=v;render()}
 function sws(id,k){const box=$('#s-'+id);P[k].forEach((c,i)=>{const b=document.createElement('button');b.className='sw';b.style.background=c;b.dataset.k=k;b.dataset.v=i;b.setAttribute('aria-label','Couleur '+(i+1));b.onclick=()=>set(k,i);box.append(b)})}
 function stp(id,k,names){const box=$('#p-'+id),keys=Object.keys(names);box.innerHTML='<button class="btn" aria-label="Précédent">◀</button><span></span><button class="btn" aria-label="Suivant">▶</button>';
 const go=d=>set(k,keys[(keys.indexOf(S[k])+d+keys.length)%keys.length]);box.children[0].onclick=()=>go(-1);box.children[2].onclick=()=>go(1)}
-sws('skin','skin');sws('hair','hair');sws('outfit','outfit');sws('accent','accent');stp('hs','hs',HN);stp('os','os',ON);stp('acc','acc',AN);stp('petacc','petAcc',PAN);sws('petaccent','petaccent');
+stp('petacc','petAcc',PAN);sws('petaccent','petaccent');
 Object.keys(PN).forEach(k=>{const b=document.createElement('button');b.className='btn';b.dataset.pal=k;b.append(petImage(k,'idle','pet-thumb'));b.append(PN[k]);b.onclick=()=>set('pal',k);$('#pals').append(b)});
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>set('mode',b.dataset.m));
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>set('tab',b.dataset.t));
@@ -200,7 +198,7 @@ document.querySelectorAll('[data-k][data-v]').forEach(b=>b.setAttribute('aria-pr
 document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed',String(S.mode===b.dataset.m)));
 document.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-selected',String(S.tab===b.dataset.t)));
 document.querySelectorAll('[data-pal]').forEach(b=>b.setAttribute('aria-pressed',String(S.pal===b.dataset.pal)));
-$('#p-hs span').textContent=HN[S.hs];$('#p-os span').textContent=ON[S.os];$('#p-acc span').textContent=AN[S.acc];$('#p-petacc span').textContent=PAN[S.petAcc]||'Aucun';
+$('#p-petacc span').textContent=PAN[S.petAcc]||'Aucun';
 $('#me').hidden=S.tab!=='me';$('#pal').hidden=S.tab!=='pal';
 if(!typing){$('#nm').value=S.name;$('#bio').value=S.bio;$('#cn').value=S.cn}
 $('#out').value=JSON.stringify(S);
