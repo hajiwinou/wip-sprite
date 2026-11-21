@@ -194,3 +194,20 @@ input[type=text]{width:min(58%,220px);min-width:0}
   .large-swatches{gap:9px}
   .large-swatches .sw{width:32px;height:32px;flex-basis:32px}
 }
+/* Vraies miniatures PNG de l'atelier avatar */
+.choice-art{display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.choice-art img{display:block;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}
+#hair-choices .choice-art{height:92px;}
+#outfit-choices .choice-art{height:76px;}
+/* Véritables calques PNG transparents alignés sur le sprite humain. */
+.hero-composite{isolation:isolate}
+.hero-composite .human-raster-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none;z-index:2}
+.hero-composite .clothing-raster-layer{z-index:3}
+.hero-composite .hair-raster-layer{z-index:4}
+.hero-composite .accessory-raster-layer{z-index:5}
+#accessory-choices .choice-art,#clothing-layer-choices .choice-art{height:64px}
+#accessory-choices .choice-art img,#clothing-layer-choices .choice-art img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+/* Chaussures pixel-art : calque transparent ancré aux pieds, conservant le format vertical iPhone. */
+.hero-composite{position:relative}
+.shoe-raster-layer{position:absolute;z-index:7;left:25%;top:86%;width:50%;height:12%;object-fit:contain;image-rendering:pixelated;pointer-events:none}
+.subcopy{margin:.2rem 0 .7rem;color:var(--ink-soft,#62539a);font-size:.9rem;line-height:1.45}

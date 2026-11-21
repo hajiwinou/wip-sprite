@@ -1,10 +1,12 @@
 
 /* Avatar humain : rendu à partir du sprite PNG original, avec recoloration par masque et calques SVG indépendants. */
 const $=s=>document.querySelector(s);
-const HN={sprite:'Coupe d’origine',fringe:'Frange',curtain:'Frange rideau',bun:'Chignon',twin:'Couettes',afro:'Volume afro',braids:'Tresses',ponytail:'Queue haute'};
+const HN={style0:'Coupe d’origine',style1:'Longues ondulations',style2:'Lisse',style3:'Carré ondulé',style4:'Couettes longues',style5:'Double chignon',style6:'Boucles volumineuses',style7:'Tresses',style8:'Queue bouclée',hijab:'Hijab'};
+const HAIR_FILES={style0:'style-0.png',style1:'style-1.png',style2:'style-2.png',style3:'style-3.png',style4:'style-4.png',style5:'style-5.png',style6:'style-6.png',style7:'style-7.png',style8:'style-8.png',hijab:'hijab.png'};
+const OUTFIT_FILES={tee:'tee.png',sweater:'sweater.png',hoodie:'hoodie.png',dress:'dress.png',overalls:'overalls.png'};
 const ON={tee:'T-shirt',sweater:'Pull cosy',hoodie:'Sweat',dress:'Robe',overalls:'Salopette'};
 const PAN={none:'Aucun',bow:'Nœud',cowboy:'Chapeau cowboy',flower:'Fleur',crown:'Couronne',cap:'Casquette',beret:'Béret',bonnet:'Bonnet',glasses:'Lunettes',scarf:'Écharpe',halo:'Aur éole',wings:'Petites ailes'};
-const AN={none:'Aucun',bow:'Nœud',flower:'Fleur',headband:'Serre-tête',beret:'Béret',cap:'Casquette',necklace:'Collier',earrings:'Boucles d’oreilles',backpack:'Sac à dos',crown:'Couronne',glasses:'Lunettes',sunglasses:'Lunettes soleil',hairclip:'Barrette',scarf:'Écharpe',hijab:'Hijab'};
+const AN={none:'Aucun',bow:'Nœud',flower:'Fleur',headband:'Serre-tête',beret:'Béret',cap:'Casquette',necklace:'Collier',earrings:'Boucles d’oreilles',backpack:'Sac à dos',crown:'Couronne',glasses:'Lunettes',sunglasses:'Lunettes soleil',hairclip:'Barrette',scarf:'Écharpe'};
 const HAIR_COLORS=['#291a2b','#493027','#79513a','#b87943','#e5b45b','#f2d7a0','#d85b3d','#d77aa8','#9b78d0','#536fae','#c9d0d8','#f5eee5'];
 const SKIN_COLORS=['#ffe9d8','#f8d0b0','#efb58e','#d9956b','#bd7954','#965b3f','#70432f','#42291f'];
 const OUTFIT_COLORS=['#fff0df','#ff78b8','#94a6ee','#4a3bea','#8fe3c0','#ffe6fb','#f4b183','#e8c85a','#536b52','#7c4f45','#343b55','#f4f0df'];
@@ -12,75 +14,68 @@ const ACCENT_COLORS=['#ff4fa8','#ffd84a','#8fe3c0','#ffe6fb','#4a3bea'];
 const PETACC_COLORS=['#ff4fb8','#ffd84a','#8fe3c0','#ffe6fb','#4a3bea','#a0c8ff','#7a4a2a'];
 const PN={ophanim:'Ophanim',bunny:'Lemon',cat:'Fibonacci',turtle:'Leto',yarn:'Lovelace',octo:'Chopard',narwhal:'Socrate',snail:'Platon',frog:'Artemis',sheep:'Diana',button:'Avicenne',llama:'Firnas',starfish:'Hypatie',giraffe:'Tesla',dalmatian:'Newton',koala:'Galilée',crab:'Curie',kiwi:'Kiwi'};
 const DEFAULT_COMPANION_NAMES={...PN};
-let S={name:'Moi',bio:'',skin:0,hair:1,outfit:5,accent:0,hs:'sprite',os:'sweater',layers:[],accs:[],petAcc:'none',petAccent:0,pal:'bunny',cn:'Lemon',cNames:{...DEFAULT_COMPANION_NAMES},mode:'sleep',tab:'me',spriteHue:0};
+let S={name:'Moi',bio:'',skin:0,hair:1,outfit:5,accent:0,hs:'sprite',os:'sweater',shoes:'sneakers',layers:[],accs:[],petAcc:'none',petAccent:0,pal:'bunny',cn:'Lemon',cNames:{...DEFAULT_COMPANION_NAMES},mode:'sleep',tab:'me',spriteHue:0};
 // Nouvelle clé de sauvegarde : les anciens accessoires dessinés ne peuvent plus contaminer ce profil refondu.
-try{Object.assign(S,JSON.parse(localStorage.getItem('wipProfileStudioV2')||'{}'))}catch(e){}
-S.layers=Array.isArray(S.layers)?S.layers:[];S.accs=Array.isArray(S.accs)?S.accs:[];S.cNames={...DEFAULT_COMPANION_NAMES,...(S.cNames||{})};
+let savedProfile={};try{savedProfile=JSON.parse(localStorage.getItem('wipProfileStudioV2')||'{}');Object.assign(S,savedProfile)}catch(e){savedProfile={}}
+if(!['none','sneakers','boots','mary-janes'].includes(S.shoes))S.shoes='sneakers';
+S.layers=Array.isArray(S.layers)?S.layers.filter(v=>['cardigan','jacket','apron','cape','scarf'].includes(v)):[];S.accs=Array.isArray(S.accs)?S.accs.filter(v=>['bow','flower','headband','beret','cap','necklace','earrings','backpack','crown','glasses','sunglasses','hairclip','scarf'].includes(v)):[];if(Array.isArray(savedProfile.accs)&&savedProfile.accs.includes('hijab'))S.hs='hijab';S.cNames={...DEFAULT_COMPANION_NAMES,...(S.cNames||{})};
 const clamp=(v,n)=>Number.isInteger(Number(v))&&Number(v)>=0&&Number(v)<n?Number(v):0;
 S.skin=clamp(S.skin,SKIN_COLORS.length);S.hair=clamp(S.hair,HAIR_COLORS.length);S.outfit=clamp(S.outfit,OUTFIT_COLORS.length);S.accent=clamp(S.accent,ACCENT_COLORS.length);S.petAccent=clamp(S.petAccent,7);
-if(!HN[S.hs])S.hs='sprite';if(!ON[S.os])S.os='sweater';if(!PN[S.pal])S.pal='bunny';if(!['sleep','knit','done'].includes(S.mode))S.mode='sleep';if(!['me','pal'].includes(S.tab))S.tab='me';
+if(!HN[S.hs])S.hs='style0';if(!ON[S.os])S.os='sweater';if(!PN[S.pal])S.pal='bunny';if(!['sleep','knit','done'].includes(S.mode))S.mode='sleep';if(!['me','pal'].includes(S.tab))S.tab='me';
 const colorize=(img)=>{
-  const c=document.createElement('canvas');
-  c.width=img.naturalWidth||192;c.height=img.naturalHeight||206;
-  const x=c.getContext('2d',{willReadFrequently:true});
-  x.drawImage(img,0,0,c.width,c.height);
+  const c=document.createElement('canvas');c.width=img.naturalWidth||288;c.height=img.naturalHeight||512;
+  const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,c.width,c.height);
   const im=x.getImageData(0,0,c.width,c.height),d=im.data;
-  const skin=hexRgb(SKIN_COLORS[S.skin]),hair=hexRgb(HAIR_COLORS[S.hair]),cloth=hexRgb(OUTFIT_COLORS[S.outfit]);
+  const skin=hexRgb(SKIN_COLORS[S.skin]),hair=hexRgb(HAIR_COLORS[S.hair]);
   const mix=(i,target,lum)=>{const f=Math.max(.48,Math.min(1.32,lum/165));d[i]=Math.min(255,target[0]*f);d[i+1]=Math.min(255,target[1]*f);d[i+2]=Math.min(255,target[2]*f)};
   for(let y=0;y<c.height;y++)for(let xx=0;xx<c.width;xx++){
     const i=(y*c.width+xx)*4;if(d[i+3]<24)continue;
-    const r=d[i],g=d[i+1],b=d[i+2],lum=.299*r+.587*g+.114*b;
-    const nx=xx/c.width,ny=y/c.height;
-    const brown=r>g*1.16&&g>b*1.06&&r<155&&g<125&&lum<125;
-    const hairZone=brown&&ny<.72&&(ny<.34||nx<.34||nx>.66);
+    const r=d[i],g=d[i+1],b=d[i+2],lum=.299*r+.587*g+.114*b,nx=xx/c.width,ny=y/c.height;
+    const teeSleeve=S.os==='tee'&&r>g*1.10&&b>g*.90&&r>110&&ny>.48&&ny<.61&&((xx<96)||(xx>192));
+    const faceKeep=(((xx-144)/68)**2+((y-150)/78)**2)<=1;
+    const hairRegion=(ny<.23||((nx<.42||nx>.58)&&ny<.80));
+    const brown=(lum<158&&r<190&&g<155&&b<180&&r>g*.92);
+    const hairZone=hairRegion&&brown&&!faceKeep; 
     const peach=r>g*1.08&&g>b*1.04&&lum>145;
     const face=(ny>.20&&ny<.43&&nx>.32&&nx<.68);
     const arms=(ny>.48&&ny<.68&&((nx>.28&&nx<.43)||(nx>.57&&nx<.72)));
-    const skinZone=peach&&(face||arms);
-    const pink=r>g*1.08&&b>g*.82&&r>130&&ny>.40&&ny<.68&&nx>.28&&nx<.73;
-    const blue=b>r*1.03&&b>g*.96&&ny>.56&&ny<.94&&nx>.28&&nx<.73;
-    if(hairZone){if(S.hs==='sprite'&&!S.accs.includes('hijab'))mix(i,hair,lum);else d[i+3]=0}
-    else if(skinZone)mix(i,skin,lum);
-    else if(pink||blue)mix(i,cloth,lum);
+    if(hairZone){if(S.hs==='style0')mix(i,hair,lum);else d[i+3]=0}
+    else if(teeSleeve)mix(i,skin,lum);
+    else if(peach&&(face||arms))mix(i,skin,lum);
   }
   x.putImageData(im,0,0);return c
 };
 function hexRgb(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
-function humanLayerSvg(){const hair=HAIR_COLORS[S.hair],accent=ACCENT_COLORS[S.accent];let a='';
-const hairBase=`M96 18 C62 15 31 40 28 79 L22 126 Q28 154 56 160 L61 121 L50 96 Q48 72 68 58 Q96 40 124 58 Q144 72 142 96 L131 121 L136 160 Q164 153 170 126 L164 79 Q160 42 130 24 Z M64 94 Q60 58 96 54 Q132 58 128 94 L124 119 Q96 133 68 119 Z`;
-if(S.hs!=='sprite'&&!S.accs.includes('hijab')){a+=`<path d="${hairBase}" fill="${hair}" fill-rule="evenodd" stroke="#21152b" stroke-width="4" stroke-linejoin="miter"/>`;
-if(S.hs==='fringe')a+=`<path d="M57 65 L67 45 L84 43 L93 72 L102 44 L121 47 L137 67 L122 64 L111 78 L99 64 L87 79 L74 65 Z" fill="${hair}" stroke="#21152b" stroke-width="3"/>`;
-if(S.hs==='curtain')a+=`<path d="M57 65 L67 45 L88 42 L95 77 L83 69 L74 81 Z M105 42 L125 46 L137 66 L119 81 L109 69 Z" fill="${hair}" stroke="#21152b" stroke-width="3"/>`;
-if(S.hs==='bun')a+=`<circle cx="96" cy="20" r="18" fill="${hair}" stroke="#21152b" stroke-width="4"/>`;
-if(S.hs==='twin')a+=`<circle cx="38" cy="43" r="16" fill="${hair}" stroke="#21152b" stroke-width="4"/><circle cx="154" cy="43" r="16" fill="${hair}" stroke="#21152b" stroke-width="4"/>`;
-if(S.hs==='afro')a+=`<g fill="${hair}" stroke="#21152b" stroke-width="4"><circle cx="42" cy="58" r="18"/><circle cx="57" cy="34" r="18"/><circle cx="80" cy="23" r="18"/><circle cx="106" cy="22" r="18"/><circle cx="132" cy="34" r="18"/><circle cx="151" cy="58" r="18"/></g>`;
-if(S.hs==='braids')a+=`<g fill="${hair}" stroke="#21152b" stroke-width="3"><path d="M43 83 L32 96 L42 108 L31 120 L42 132 L32 144 L45 154 L57 141 L48 129 L59 117 L49 104 L59 92 Z M149 83 L160 96 L150 108 L161 120 L150 132 L160 144 L147 154 L135 141 L144 129 L133 117 L143 104 L133 92 Z"/></g>`;
-if(S.hs==='ponytail')a+=`<path d="M139 45 Q169 45 174 75 L170 116 L155 137 L146 117 L159 79 L137 66 Z" fill="${hair}" stroke="#21152b" stroke-width="4"/>`;
+function tintLayer(img,color){
+  const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0);
+  const im=x.getImageData(0,0,c.width,c.height),d=im.data,t=hexRgb(color);
+  for(let i=0;i<d.length;i+=4){if(d[i+3]<10)continue;const lum=(.299*d[i]+.587*d[i+1]+.114*d[i+2])/255;const f=.48+lum*.68;d[i]=Math.min(255,t[0]*f);d[i+1]=Math.min(255,t[1]*f);d[i+2]=Math.min(255,t[2]*f)}x.putImageData(im,0,0);return c
 }
-if(S.os==='tee')a+=`<path d="M68 130 L82 126 L96 137 L110 126 L124 130 L130 174 L62 174 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="4"/>`;
-if(S.os==='hoodie')a+=`<path d="M68 130 L82 126 L96 137 L110 126 L124 130 L132 176 L60 176 Z M78 126 Q96 108 114 126 L108 143 L84 143 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="4"/>`;
-if(S.os==='dress')a+=`<path d="M70 129 L122 129 L139 177 L53 177 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="4"/>`;
-if(S.os==='overalls')a+=`<path d="M72 131 L120 131 L126 177 L66 177 Z M76 124 L83 124 L88 145 L80 145 Z M109 124 L116 124 L112 145 L104 145 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="3"/>`;
-if(S.layers.includes('cardigan'))a+=`<path d="M62 132 L80 127 L82 176 L61 176 Z M112 127 L131 132 L132 176 L111 176 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="3"/>`;
-if(S.layers.includes('jacket'))a+=`<path d="M60 130 L78 126 L83 177 L59 177 Z M114 126 L133 130 L135 177 L111 177 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="3"/>`;
-if(S.layers.includes('apron'))a+=`<path d="M77 137 L115 137 L122 178 L70 178 Z" fill="#fff0df" stroke="#21152b" stroke-width="3"/>`;
-if(S.layers.includes('cape'))a+=`<path d="M63 121 L78 129 L69 184 L46 177 Z M129 121 L114 129 L123 184 L146 177 Z" fill="${OUTFIT_COLORS[S.outfit]}" stroke="#21152b" stroke-width="3"/>`;
-if(S.layers.includes('scarf')||S.accs.includes('scarf'))a+=`<path d="M73 120 L119 120 L116 133 L76 133 Z M109 129 L122 129 L129 158 L116 158 Z" fill="${accent}" stroke="#21152b" stroke-width="3"/>`;
-if(S.accs.includes('hijab'))a+=`<path fill-rule="evenodd" d="M40 98 Q30 49 63 31 Q96 7 129 31 Q163 49 152 98 L144 135 L132 158 L60 158 L48 135 Z M58 91 Q58 49 96 45 Q134 49 134 91 L130 116 L62 116 Z" fill="${accent}" stroke="#21152b" stroke-width="4"/>`;
-if(S.accs.includes('bow'))a+=`<path d="M49 47 L69 39 L65 58 Z M73 39 L91 47 L76 58 Z" fill="${accent}" stroke="#21152b" stroke-width="3"/>`;
-if(S.accs.includes('flower'))a+=`<g fill="${accent}" stroke="#21152b" stroke-width="2"><circle cx="50" cy="52" r="7"/><circle cx="62" cy="52" r="7"/><circle cx="56" cy="44" r="7"/><circle cx="56" cy="60" r="7"/><circle cx="56" cy="52" r="4" fill="#ffd84a"/></g>`;
-if(S.accs.includes('backpack'))a+=`<path d="M55 137 Q42 133 40 150 L42 174 L62 174 L63 145 Z" fill="${accent}" stroke="#21152b" stroke-width="3"/>`;
-if(S.accs.includes('beret'))a+=`<path d="M48 48 Q57 19 99 20 Q136 20 145 48 L137 58 L55 58 Z" fill="${accent}" stroke="#21152b" stroke-width="4"/>`;
-if(S.accs.includes('cap'))a+=`<path d="M53 47 Q61 24 96 23 Q130 24 139 47 L139 56 L53 56 Z M98 50 L154 57 L151 64 L103 60 Z" fill="${accent}" stroke="#21152b" stroke-width="4"/>`;
-if(S.accs.includes('glasses'))a+=`<g fill="none" stroke="#21152b" stroke-width="4"><rect x="61" y="76" width="25" height="18" rx="5"/><rect x="106" y="76" width="25" height="18" rx="5"/><path d="M86 83 L106 83"/></g>`;
-if(S.accs.includes('sunglasses'))a+=`<g fill="${accent}" fill-opacity=".82" stroke="#21152b" stroke-width="4"><rect x="61" y="76" width="25" height="18" rx="5"/><rect x="106" y="76" width="25" height="18" rx="5"/><path d="M86 83 L106 83" fill="none"/></g>`;
-if(S.accs.includes('crown'))a+=`<path d="M61 40 L68 19 L85 34 L96 12 L108 34 L125 19 L132 42 Z" fill="${accent}" stroke="#21152b" stroke-width="4"/>`;
-if(S.accs.includes('headband'))a+=`<path d="M48 57 Q96 19 144 57" fill="none" stroke="${accent}" stroke-width="8"/>`;
-if(S.accs.includes('necklace'))a+=`<path d="M78 130 Q96 151 114 130" fill="none" stroke="${accent}" stroke-width="4"/><circle cx="96" cy="145" r="5" fill="${accent}" stroke="#21152b" stroke-width="2"/>`;
-if(S.accs.includes('earrings'))a+=`<g fill="${accent}" stroke="#21152b" stroke-width="2"><circle cx="49" cy="105" r="5"/><circle cx="143" cy="105" r="5"/></g>`;
-if(S.accs.includes('hairclip'))a+=`<rect x="48" y="67" width="18" height="5" fill="${accent}" stroke="#21152b" stroke-width="2"/>`;
-return `<svg viewBox="0 0 192 342" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">${a}</svg>`}
-function humanSpriteNode(){const wrap=document.createElement('div');wrap.className='hero-composite';const img=new Image();img.className='hero-source';img.src='wip-sprites/human/avatar-base.png';img.alt='Mon personnage';img.onload=()=>{const c=colorize(img);c.className='hero-sprite';c.setAttribute('role','img');c.setAttribute('aria-label','Mon personnage personnalisable');wrap.insertBefore(c,wrap.firstChild);img.remove()};wrap.append(img);const overlay=document.createElement('div');overlay.className='human-overlay';overlay.innerHTML=humanLayerSvg();wrap.append(overlay);return wrap}
+function addRasterLayer(wrap,path,color){const img=new Image();img.onload=()=>{const node=document.createElement('img');node.className='human-raster-layer '+(path.includes('/accessories/')?'accessory-raster-layer':path.includes('hair/')?'hair-raster-layer':'clothing-raster-layer');node.alt='';node.src=color?tintLayer(img,color).toDataURL():path;wrap.append(node)};img.src=path}
+function humanSpriteNode(){
+  const wrap=document.createElement('div');wrap.className='hero-composite';const img=new Image();img.className='hero-source';img.src='wip-sprites/human/avatar-base.png';img.alt='Mon personnage';
+  img.onload=()=>{
+    const c=colorize(img);c.className='hero-sprite';c.setAttribute('role','img');c.setAttribute('aria-label','Mon personnage personnalisable');wrap.replaceChildren(c);
+    const root='wip-sprites/human/layers/';
+    // The selected outfit is a real, full-canvas transparent PNG layer, not an icon or SVG shape.
+    const top=new Image();top.onload=()=>{const layer=tintLayer(top,OUTFIT_COLORS[S.outfit]);const node=document.createElement('img');node.className='human-raster-layer';node.alt='';node.src=layer.toDataURL();wrap.append(node)};top.src=root+'outfits/'+(S.os==='tee'||S.os==='dress'?'tee.png':S.os==='hoodie'?'hoodie.png':S.os==='overalls'?'overalls.png':'sweater.png');
+    const pants=new Image();pants.onload=()=>{const layer=tintLayer(pants,'#8496d5');const node=document.createElement('img');node.className='human-raster-layer';node.alt='';node.src=layer.toDataURL();wrap.append(node)};pants.src=root+'outfits/bottoms.png';
+    if(S.os==='tee')addRasterLayer(wrap,root+'outfits/tee-details.png');
+    if(S.os==='sweater')addRasterLayer(wrap,root+'outfits/sweater-details.png');
+    if(S.os==='dress'){addRasterLayer(wrap,root+'outfits/dress-skirt.png')}
+    if(S.os==='overalls')addRasterLayer(wrap,root+'outfits/overalls-bib.png');
+    if(S.os==='hoodie')addRasterLayer(wrap,root+'outfits/hoodie-details.png');
+    // Additional clothing pieces can be stacked independently.
+    S.layers.forEach(v=>{const file=({cardigan:'cardigan',jacket:'jacket',apron:'apron',cape:'cape',scarf:'scarf'})[v];if(file)addRasterLayer(wrap,root+'outfits/'+file+'.png',ACCENT_COLORS[S.accent])});
+    // Footwear is a genuine pixel-art PNG, positioned over the avatar's feet.
+    if(S.shoes&&S.shoes!=='none'){const shoe=new Image();shoe.onload=()=>{const node=document.createElement('img');node.className='shoe-raster-layer';node.alt='';node.src=shoe.src;wrap.append(node)};shoe.src=root+'shoes/'+S.shoes+'.png'}
+    // Hair assets are transparent PNGs aligned to the avatar canvas.
+    if(S.hs!=='style0'){const hair=new Image();hair.onload=()=>{const layer=tintLayer(hair,HAIR_COLORS[S.hair]);const node=document.createElement('img');node.className='human-raster-layer hair-raster-layer';node.alt='';node.src=layer.toDataURL();wrap.append(node)};hair.src=root+'hair/'+(HAIR_FILES[S.hs]||HAIR_FILES.style1)}
+    // Multi-select accessories are individual transparent pixel-art PNG layers.
+    const accessoryMap={bow:'bow',flower:'flower',headband:'headband',beret:'beret',cap:'cap',necklace:'necklace',earrings:'earrings',backpack:'backpack',crown:'crown',glasses:'glasses',sunglasses:'sunglasses',hairclip:'hairclip',scarf:'scarf'};
+    S.accs.forEach(v=>{const file=accessoryMap[v];if(file)addRasterLayer(wrap,root+'accessories/'+file+'.png',ACCENT_COLORS[S.accent])});
+  };wrap.append(img);return wrap
+}
 
 /* Compagnons illustrés : sprites PNG dessinés individuellement.
    Chaque compagnon possède quatre poses : idle, happy, sleep et action. La grenouille a été redessinée avec une petite bouche souriante fermée, plus douce et discrète. */
@@ -109,9 +104,13 @@ const b=document.createElement('div');b.className='who '+({sleep:'slow',knit:'fa
 sc.append(a,b);$('#bub').textContent=bubble()}
 function set(k,v){S[k]=v;if(k==='pal'){S.cn=S.cNames[v]||DEFAULT_COMPANION_NAMES[v];}render()}
 function swatches(id,colors,key){const box=$('#'+id);if(!box)return;box.innerHTML='';colors.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='sw';b.style.background=c;b.dataset.choice=key;b.dataset.value=i;b.setAttribute('aria-label','Couleur '+(i+1));b.setAttribute('aria-pressed',String(Number(S[key])===i));b.onclick=()=>{S[key]=i;render()};box.append(b)})}
-const CHOICE_ART={sprite:'✧',fringe:'⌁',curtain:'〰',bun:'◉',twin:'❀',afro:'✿',braids:'≋',ponytail:'⌁',tee:'♡',sweater:'♧',hoodie:'☁',dress:'♢',overalls:'✿',cardigan:'▤',jacket:'▧',apron:'♧',cape:'✧',scarf:'〰',none:'○',bow:'🎀',flower:'✿',headband:'⌒',beret:'◒',cap:'⌑',necklace:'◇',earrings:'✧',backpack:'▣',crown:'♕',glasses:'◉',sunglasses:'◐',hairclip:'❀',hijab:'♡',cowboy:'♧',bonnet:'☁',halo:'✧',wings:'⌁'};
-function buildChoiceList(id,items,key){const box=$('#'+id);if(!box)return;box.innerHTML='';Object.entries(items).forEach(([value,label])=>{const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.choice=key;b.dataset.value=value;const art=document.createElement('span');art.className='choice-art';art.textContent=CHOICE_ART[value]||'✧';const caption=document.createElement('span');caption.className='choice-label';caption.textContent=label;b.append(art,caption);b.onclick=()=>{if(key==='accs'||key==='layers'){S[key]=S[key].includes(value)?S[key].filter(x=>x!==value):[...S[key],value]}else S[key]=value;render()};box.append(b)})}
-buildChoiceList('hair-choices',HN,'hs');buildChoiceList('clothing-layer-choices',{cardigan:'Gilet',jacket:'Veste',apron:'Tablier',cape:'Cape',scarf:'Écharpe'},'layers');swatches('skin-choices',SKIN_COLORS,'skin');swatches('hair-color-choices',HAIR_COLORS,'hair');buildChoiceList('outfit-choices',ON,'os');swatches('outfit-color-choices',OUTFIT_COLORS,'outfit');buildChoiceList('accessory-choices',AN,'accs');swatches('accessory-color-choices',ACCENT_COLORS,'accent');
+const CHOICE_ART={};
+const ACCESSORY_FILES={bow:'bow',flower:'flower',headband:'headband',beret:'beret',cap:'cap',necklace:'necklace',earrings:'earrings',backpack:'backpack',crown:'crown',glasses:'glasses',sunglasses:'sunglasses',hairclip:'hairclip',scarf:'scarf'};
+const LAYER_FILES={cardigan:'cardigan',jacket:'jacket',apron:'apron',cape:'cape',scarf:'scarf'};
+const SHOE_FILES={none:null,sneakers:'sneakers',boots:'boots','mary-janes':'mary-janes'};
+const SHOE_NAMES={none:'Aucune',sneakers:'Baskets',boots:'Bottines','mary-janes':'Mocassins'};
+function buildChoiceList(id,items,key){const box=$('#'+id);if(!box)return;box.innerHTML='';Object.entries(items).forEach(([value,label])=>{const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.choice=key;b.dataset.value=value;const art=document.createElement('span');art.className='choice-art';let src='';if(key==='hs')src='wip-sprites/human/layers/hair/'+(HAIR_FILES[value]||HAIR_FILES.style0);else if(key==='os')src='wip-sprites/human/layers/outfits/thumbs/'+value+'.png';else if(key==='accs'&&ACCESSORY_FILES[value])src='wip-sprites/human/layers/accessories/thumbs/'+ACCESSORY_FILES[value]+'.png';else if(key==='layers'&&LAYER_FILES[value])src='wip-sprites/human/layers/outfits/thumbs/'+LAYER_FILES[value]+'.png';else if(key==='shoes'&&SHOE_FILES[value])src='wip-sprites/human/layers/shoes/thumbs/'+SHOE_FILES[value]+'.png';if(src){const image=document.createElement('img');image.src=src;image.alt='';image.loading='lazy';art.append(image)}else art.textContent=value==='none'?'×':'♡';const caption=document.createElement('span');caption.className='choice-label';caption.textContent=label;b.append(art,caption);b.onclick=()=>{if(key==='accs'||key==='layers'){if(value==='none')S[key]=[];else S[key]=S[key].includes(value)?S[key].filter(x=>x!==value):[...S[key],value]}else{S[key]=value;if(key==='hs')S.accs=S.accs.filter(x=>x!=='hijab')}render()};box.append(b)})}
+buildChoiceList('shoe-choices',SHOE_NAMES,'shoes');buildChoiceList('hair-choices',HN,'hs');buildChoiceList('clothing-layer-choices',{cardigan:'Gilet',jacket:'Veste',apron:'Tablier',cape:'Cape',scarf:'Écharpe'},'layers');swatches('skin-choices',SKIN_COLORS,'skin');swatches('hair-color-choices',HAIR_COLORS,'hair');buildChoiceList('outfit-choices',ON,'os');swatches('outfit-color-choices',OUTFIT_COLORS,'outfit');buildChoiceList('accessory-choices',AN,'accs');swatches('accessory-color-choices',ACCENT_COLORS,'accent');
 function stp(id,k,names){const box=$('#p-'+id),keys=Object.keys(names);box.innerHTML='<button class="btn" aria-label="Précédent">◀</button><span></span><button class="btn" aria-label="Suivant">▶</button>';
 const go=d=>set(k,keys[(keys.indexOf(S[k])+d+keys.length)%keys.length]);box.children[0].onclick=()=>go(-1);box.children[2].onclick=()=>go(1)}
 stp('petacc','petAcc',PAN);swatches('s-petaccent',PETACC_COLORS,'petAccent');
