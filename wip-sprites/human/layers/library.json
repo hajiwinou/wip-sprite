@@ -39,16 +39,19 @@
     "ivory"
   ],
   "hairLayers": [
-    "sprite",
-    "fringe",
-    "curtain",
-    "bun",
-    "twin",
-    "afro",
-    "braids",
-    "ponytail"
+    "style-0",
+    "style-1",
+    "style-2",
+    "style-3",
+    "style-4",
+    "style-5",
+    "style-6",
+    "style-7",
+    "style-8",
+    "hijab"
   ],
   "accessories": [
+    "none",
     "bow",
     "flower",
     "headband",
@@ -61,8 +64,7 @@
     "glasses",
     "sunglasses",
     "hairclip",
-    "scarf",
-    "hijab"
+    "scarf"
   ],
   "clothingLayers": [
     "cardigan",
@@ -70,5 +72,88 @@
     "apron",
     "cape",
     "scarf"
+  ],
+  "hairAssets": {
+    "style0": "hair/style-0.png",
+    "style1": "hair/style-1.png",
+    "style2": "hair/style-2.png",
+    "style3": "hair/style-3.png",
+    "style4": "hair/style-4.png",
+    "style5": "hair/style-5.png",
+    "style6": "hair/style-6.png",
+    "style7": "hair/style-7.png",
+    "style8": "hair/style-8.png",
+    "hijab": "hair/hijab.png"
+  },
+  "outfitPreviewAssets": {
+    "tee": "outfits/tee.png",
+    "sweater": "outfits/sweater.png",
+    "hoodie": "outfits/hoodie.png",
+    "dress": "outfits/dress.png",
+    "overalls": "outfits/overalls.png"
+  },
+  "outfitLayers": {
+    "tee": "outfits/tee.png",
+    "sweater": "outfits/sweater.png",
+    "hoodie": "outfits/hoodie.png",
+    "overalls": "outfits/overalls.png",
+    "bottoms": "outfits/bottoms.png",
+    "dress-skirt": "outfits/dress-skirt.png",
+    "overalls-bib": "outfits/overalls-bib.png",
+    "hoodie-details": "outfits/hoodie-details.png",
+    "tee-details": "outfits/tee-details.png",
+    "sweater-details": "outfits/sweater-details.png",
+    "cardigan": "outfits/cardigan.png",
+    "jacket": "outfits/jacket.png",
+    "apron": "outfits/apron.png",
+    "cape": "outfits/cape.png",
+    "scarf": "outfits/scarf.png"
+  },
+  "accessoryLayers": {
+    "bow": "accessories/bow.png",
+    "flower": "accessories/flower.png",
+    "headband": "accessories/headband.png",
+    "beret": "accessories/beret.png",
+    "cap": "accessories/cap.png",
+    "necklace": "accessories/necklace.png",
+    "earrings": "accessories/earrings.png",
+    "backpack": "accessories/backpack.png",
+    "crown": "accessories/crown.png",
+    "glasses": "accessories/glasses.png",
+    "sunglasses": "accessories/sunglasses.png",
+    "hairclip": "accessories/hairclip.png",
+    "scarf": "accessories/scarf.png"
+  },
+  "accessoryPreviews": {
+    "bow": "accessories/thumbs/bow.png",
+    "flower": "accessories/thumbs/flower.png",
+    "headband": "accessories/thumbs/headband.png",
+    "beret": "accessories/thumbs/beret.png",
+    "cap": "accessories/thumbs/cap.png",
+    "necklace": "accessories/thumbs/necklace.png",
+    "earrings": "accessories/thumbs/earrings.png",
+    "backpack": "accessories/thumbs/backpack.png",
+    "crown": "accessories/thumbs/crown.png",
+    "glasses": "accessories/thumbs/glasses.png",
+    "sunglasses": "accessories/thumbs/sunglasses.png",
+    "hairclip": "accessories/thumbs/hairclip.png",
+    "scarf": "accessories/thumbs/scarf.png"
+  },
+  "clothingLayerPreviews": {
+    "cardigan": "outfits/thumbs/cardigan.png",
+    "jacket": "outfits/thumbs/jacket.png",
+    "apron": "outfits/thumbs/apron.png",
+    "cape": "outfits/thumbs/cape.png",
+    "scarf": "outfits/thumbs/scarf.png"
+  },
+  "shoeOptions": {
+    "none": null,
+    "sneakers": "shoes/thumbs/sneakers.png",
+    "boots": "shoes/thumbs/boots.png",
+    "mary-janes": "shoes/thumbs/mary-janes.png"
+  },
+  "notes": [
+    "Les chaussures sont des PNG pixel art affichés comme calque indépendant au niveau des pieds.",
+    "Les nouveaux visuels de garde-robe sont des miniatures; seuls les éléments reliés à un calque de personnage sont appliqués à l’avatar."
   ]
 }
